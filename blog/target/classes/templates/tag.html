@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文章分类</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="icon" href="https://www.iculture.cc/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-size: 20px;
+            background-color: #e3e3e3;
+        }
+        .card-box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: space-between;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40em;
+            height: 22em;
+            padding: 1.5em;
+            background-color: #e3e3e3;
+        }
+        .card-box .card {
+            transition: transform .2s, box-shadow .2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 5.5em;
+            height: 3.5em;
+            margin-bottom: 1em;
+            border-radius: .5em;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, .1), -2px -2px 4px rgba(0, 0, 0, .1);
+            background-color: #fff;
+            color: #3e3e3e;
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: 4px;
+            cursor: pointer;
+        }
+        .card-box .card:hover {
+            transition: transform .2s, box-shadow .2s;
+            transform: translateY(-4px);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, .1), -4px -4px 8px rgba(0, 0, 0, .1);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--导航-->
+    <nav class="ui inverted attached segment m-shadow-small" >
+        <div class="ui container">
+            <div class="ui stackable menu inverted secondary">
+                <h1 class="ui header teal item">美玲小博客</h1>
+                <a th:href="@{/blog/main}" class="active m-item item m-mobile-hide"><i class="home icon"></i>首页</a>
+                <a th:href="@{/blog/category}" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+                <a th:href="@{/blog/tags}" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+                <a th:href="@{/blog/about}" class="m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
+                <a th:href="@{/blog/toEditor}" class="m-item item m-mobile-hide"><i class="edit icon"></i>写文章</a>
+                <div class="m-item right item m-mobile-hide">
+                    <div class="ui input icon">
+                        <input type="text" placeholder="Search......">
+                        <i class="search icon link"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--汉堡按钮-->
+        <a href="#" class="menu ui toggle black icon button m-right-mid m-mobile-show">
+            <i class=" sidebar icon"></i>
+        </a>
+    </nav>
+    <!--中间内容-->
+    <div class="card-box">
+        <div class="card" th:each="tag:${tags}">
+            <a th:href="@{/blog/tagshow}"><span th:text="${tag.getName()}"></span></a>
+        </div>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</div>
+</body>
+</html>

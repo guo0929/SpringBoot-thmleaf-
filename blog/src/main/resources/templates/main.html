@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>美玲小博客</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <link rel="icon" href="https://www.iculture.cc/favicon.ico">
+</head>
+<body>
+
+<div id="app">
+  <!--导航-->
+  <nav class="ui inverted attached segment m-shadow-small" >
+    <div class="ui container">
+      <div class="ui stackable menu inverted secondary">
+        <h1 class="ui header teal item">美玲小博客</h1>
+        <a th:href="@{/blog/main}" class="active m-item item m-mobile-hide"><i class="home icon"></i>首页</a>
+        <a th:href="@{/blog/category}" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+        <a th:href="@{/blog/tags}" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+        <a th:href="@{/blog/about}" class="m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
+        <a th:href="@{/blog/toEditor}" class="m-item item m-mobile-hide"><i class="edit icon"></i>写文章</a>
+        <div class="m-item right item m-mobile-hide">
+          <div class="ui input icon">
+            <form th:action="@{/blog/search}" method="post">
+            <input type="text" name="title" placeholder="请输入您要查询的内容:">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--汉堡按钮-->
+    <a th:href="@{/blog/admin/toLogin}" class="menu ui toggle black icon button m-right-mid m-mobile-show">
+      <i class=" sidebar icon"></i>
+    </a>
+  </nav>
+  <!--中间内容-->
+  <div class="m-container m-padded-tb-big">
+    <div class="ui container"><!--这个container有响应式的效果，适应不同大小的尺寸-->
+      <div class="ui stackable grid">
+        <!--左边博客列表部分-->
+        <div class="eleven wide column">
+          <!--header-->
+          <div class="ui top attached segment">
+            <div class="ui two column grid middle aligned">
+              <div class="column">
+                <h3 class="ui header teal">博客列表</h3>
+              </div>
+              <div class="column right aligned">
+                共 <h3 class="ui orange header m-inline-block m-text-thin">[[${result.total}]]</h3>篇
+              </div>
+            </div>
+          </div>
+          <!--list-->
+          <div class="ui attached segment">
+            <div class="ui padded vertical segment m-padded-tb-large">
+              <div class="ui stackable grid">
+                <!--左边文章内容-->
+                <div class="sixteen wide column" th:each="article:${result.records}">
+                  <h3 class="ui header"><a th:href="@{/blog/content}" class="m-black" th:text="${article.getTitle()}"></a></h3>
+                  <p th:text="${article.getSummary()}"></p>
+                  <!--文章下面的头像、作者、日期、访问量那一行-->
+                  <div class="ui stackable grid">
+                    <div class="eleven wide column">
+                      <!--横向排列的列表-->
+                      <div class="ui mini horizontal link list">
+                        <div class="item">
+                          <img src="/images/tou.jpg" class="ui avatar image">
+                          <div class="content"><a th:href="@{/blog/about}">小郭同学</a></div>
+                        </div>
+                        &nbsp;
+                        &nbsp;
+                        <div class="item">
+                          <i class="calendar icon"></i><span th:text="${article.getCreateTime()}"></span>
+                        </div>
+                        &nbsp;
+                        &nbsp;
+                        <div class="item">
+                          <i class="eye icon"></i><span th:text="${article.getReadNumber()}"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="five wide column right aligned">
+                      <a target="_blank" class="ui teal basic label m-padded-tiny" th:text="${article.getType()}"></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--footer分页-->
+          <div class="ui bottom attached segment">
+            <div class="ui two column grid middle aligned">
+              当前第 [[${result.current}]]
+              总计 [[${result.pages}]] 页
+              共[[${result.total}]] 条记录
+              <ul>
+                <li th:class="${result.current == 1}? 'prev disabled':'prve'" class="prev disabled">
+                  <a th:href="@{/blog/main(pn=${result.current}-1)}">← 上一页</a></li>
+                <li th:class="${num == result.current} ?'active':''"
+                    th:each="num:${#numbers.sequence(1,result.pages)}">
+                  <a th:href="@{/blog/main(pn=${num})}">[[${num}]]</a>
+                </li>
+                <li class="next" th:class="${result.current == result.pages?'disabled next':'next'}">
+                  <a th:href="@{/blog/main(pn=${result.current}+1)}">下一页 → </a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--右边top部分-->
+        <div class="five wide column">
+          <!--分类-->
+          <div class="ui segments">
+            <div class="ui secondary segment">
+              <div class="ui two column grid">
+                <div class="column">
+                  <i class="idea icon"></i>分类
+                </div>
+                <div class="right aligned column">
+                  <a th:href="@{/blog/category}" target="_blank">更多<i class="angle double right icon"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="ui teal segment">
+              <div class="ui fluid vertical menu" th:each="article:${result.records}">
+                <a th:href="@{/blog/categoryshow}" target="_blank" class="item">
+                  <span th:text="${article.getType()}"></span>
+                  <div class="ui teal basic left pointing label">11</div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!--标签-->
+          <div class="ui segments m-margin-top-large">
+            <div class="ui secondary segment">
+              <div class="ui two column grid">
+                <div class="column">
+                  <i class="tags icon"></i>标签
+                </div>
+                <div class="right aligned column">
+                  <a th:href="@{/blog/tags}" target="_blank">更多<i class="angle double right icon"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="ui teal segment" th:each="article:${result.records}">
+              <a th:href="@{/blog/tagshow}" target="_blank" class="ui teal basic left pointing label m-margin-tb-tiny">
+                <span th:text="${article.getTag()}"></span><div class="detail"></div>
+              </a>
+            </div>
+          </div>
+
+          <!--最新推荐-->
+          <div class="ui segments m-margin-top-large">
+            <div class="ui secondary segment">
+              <i class="bookmark icon"></i>最新推荐
+            </div>
+            <div class="ui segment" >
+              <a href="#" target="_blank" class="m-black">用户故事（user story）</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <br>
+  <!--底部-->
+  <footer class="ui inverted vertical segment m-padded-tb-massive">
+    <div align="center">加油！程序猿！</div>
+  </footer>
+
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+<script>
+
+
+  $(".menu.toggle").click( function(){
+    $(".m-item").toggleClass("m-mobile-hide");
+  });
+
+
+</script>
+
+</body>
+</html>
